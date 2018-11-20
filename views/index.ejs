@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>استاد یار</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <% include ./index.css.ejs %>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="boddy" dir="rtl" onload="PageLoaded();" onscroll="Jambo_Scroll();">
+	
+	<div id="JumborId" class="jumbotron" onclick="">
+		<div class="container text-center">
+			<div style="display:block; font-size: 2vw;" id="JataShowUpDiv" class="animate-bottom">
+				<h1>استاد یار</h1>
+				<p>تدریس یار مجازی</p>
+			</div>
+		</div>
+	</div>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="http://198.143.181.151">Ostadyar</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<!---- <li class="active"><a href="#">خانه</a></li>-->
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<% if(locals.loggedIn){ %>
+					<li>
+						<a style="cursor: pointer;" id="LogoutBtn" href="/logout"><span class="glyphicon glyphicon-user"></span> خروج!</a>
+					</li>
+					<% } else { %>
+					<li>
+						<a style="cursor: pointer;" id="LoginBtn"><span class="glyphicon glyphicon-user"></span> ورود</a>
+					</li>
+					<li>
+						<a style="cursor: pointer;" id="SignupBtn"><span class="glyphicon glyphicon-user"></span> ثبت نام</a>
+					</li>
+					<% } %>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container loader" style="margin-top: 20vh; margin-bottom: 10vh;" id="loader"></div>
+
+
+	<div id="MainDiv" style="display: none;">
+
+
+
+
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl();">
+						<div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
+						<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+							 alt="Image">
+
+						</div>
+						<div class="panel-footer">
+							<p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
+							<p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
+							<p>شما میتوانید در این دوره عضو شوید</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">دانشکده برق و کامپیوتر</div>
+						<div class="panel-body">
+							<!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                alt="Image">-->
+						</div>
+						<div class="panel-footer"></div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="panel panel-primary">
+						<div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
+						<div class="panel-body">
+							<!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                alt="Image">-->
+						</div>
+						<div class="panel-footer"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="panel panel-primary">
+					<div class="panel-heading">دوره های من</div>
+					<div class="panel-body">
+
+						<div class="col-sm-4">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<p>نمونه سوالات جدید</p>
+									<p><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%" alt="Image"></p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="onl();">
+								<div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
+								<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+									 alt="Image">
+
+								</div>
+								<div class="panel-footer">
+									<p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
+									<p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
+									<p>شما میتوانید در این دوره عضو شوید</p>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="panel panel-default">
+								<div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
+								<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+									 alt="Image"></div>
+								<div class="panel-footer"></div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br>
+
+
+	</div>
+	<br><br>
+
+
+
+	<div class="modal fade" id="LoginModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="padding:35px 50px;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4><span class="glyphicon glyphicon-lock"></span> ورود</h4>
+				</div>
+				<div class="modal-body" style="padding:40px 50px;">
+					<div class="form-group">
+						<label for="usrnameForLogin"><span class="glyphicon glyphicon-user"></span> نام کاربری</label>
+						<input style="text-align: left;" type="text" class="form-control" id="usrnameForLogin" placeholder="" required>
+					</div>
+					<div class="form-group">
+						<label for="pswForLogin"><span class="glyphicon glyphicon-eye-open"></span> رمز عبور</label>
+						<input style="text-align: left;" type="password" class="form-control" id="pswForLogin" placeholder="" required>
+					</div>
+					<!--<div class="checkbox">
+						<label><input type="checkbox" value="" checked>Remember me m</label>
+					</div>-->
+					<button type="button" id="SubmitLogin" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> ورود</button>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="dismisModall" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+						لغو</button>
+					<p>آیا عضو نشده اید؟ <a id="SignupFromLogin" href="#">ثبت نام</a></p>
+					<!--<p>فراموشی <a id="ResetPswFromLogin" href="#">رمز عبور؟</a></p>-->
+					<div id="LogLoad"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div class="modal fade" id="SignupModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="padding:35px 50px;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4><span class="glyphicon glyphicon-lock"></span> ثبت نام</h4>
+				</div>
+				<div class="modal-body" style="padding:40px 50px;">
+					<div class="form-group">
+						<label for="usrnameForSign"><span class="glyphicon glyphicon-user"></span> نام کاربری</label>
+						<input style="text-align: left;" type="text" class="form-control" id="usrnameForSign" placeholder="" required>
+					</div>
+					<div class="form-group">
+						<label for="emailForSign"><span class="glyphicon glyphicon-envelope"></span> ایمیل </label>
+						<input style="text-align: left;" type="text" class="form-control" id="emailForSign" placeholder="" required>
+					</div>
+					<div class="form-group">
+						<label for="pswForSign"><span class="glyphicon glyphicon-eye-open"></span> رمز عبور</label>
+						<input style="text-align: left;" type="password" class="form-control" id="pswForSign" placeholder="" required>
+					</div>
+					<div class="form-group">
+						<label for="RepswForSign"><span class="glyphicon glyphicon-eye-open"></span> تکرار رمز عبور</label>
+						<input style="text-align: left;" type="password" class="form-control" id="RepswForSign" placeholder="" required>
+					</div><hr>
+					<div class="form-group">
+						<label for="usrShwForSign"><span class="glyphicon glyphicon-user"></span> نام مستعار</label>
+						<input style="text-align: left;" type="text" class="form-control" id="usrShwForSign" placeholder="" required>
+					</div>
+					<div class="form-group">
+						<label for="switchCheckSignMaster">ثبت نام به عنوان مدرس</label>
+						<label id="switchCheckSignMaster" class="switch">
+							<input id="MasterCheck" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</div>
+					<div id="MasterDesDiv" class="form-group">
+						<label for="MasterDes">خودتان را معرفی کنید:</label>
+						<textarea class="form-control" rows="5" id="MasterDes"></textarea>
+					</div>
+					<!--<div class="checkbox">
+						<label><input type="checkbox" value="" checked>Remember me m</label>
+					</div>-->
+					<button type="button" id="SubmitSign" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> ثبت</button>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="dismisModall" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+						لغو</button>
+						<div id="signLoad"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	
+
+
+
+	<footer class="container-fluid fixed-bottom text-center">
+		<p>Ostadyar test</p>
+		<button type="button" class="btn"><a href="#">درباره ما</a></button>
+	</footer>
+
+	<script>
+		function Jambo_Scroll() {}
+		<% if(locals.loggedIn){ } else { %> 
+		var defaultJamborHeight = $('#JumborId').css('height');
+		var defaultJamborHTML = $('#JataShowUpDiv').html();
+		var seconddJamborHeight = 0;
+		$('#JumborId').css('height', $(window).height());
+		$('#JataShowUpDiv').html(defaultJamborHTML + '<div style="font-size: 3vw;" id="DescriptionJata" class="container"><br>فضایی برای اشتراک منابع کلاسی<br>با ثبت نام و ورود به سایت میتوانید در دوره ها عضو شوید</div>');
+		seconddJamborHeight = $('#JumborId').css('height');
+		Jambo_Scroll = function () {
+			if ($('#JumborId').css('height') == seconddJamborHeight) {
+				$('#JumborId').animate({ height: defaultJamborHeight }, { duration: 700, complete: function () { } });
+				$('#DescriptionJata').animate({ opacity: 0 }, { duration: 700, complete: function () { $('#JataShowUpDiv').html(defaultJamborHTML); } });
+				document.getElementById("boddy").onscroll = "";
+			}
+		}
+		<% } %>
+		function PageLoaded() 
+		{
+			$("#Scripts").load("script.js","",function (response,status,xhr) {
+				if (status == "success") {
+					$("#loader").css("display","none");
+					$("#loader").css("opacity","0");
+					$("#MainDiv").css("opacity","0");
+					$("#MainDiv").css("display","block");
+					$("#MainDiv").animate({opacity: '1'},500);
+				}
+			});
+		}
+	</script>
+	<script id="Scripts"></script>
+</body>
+
+</html>

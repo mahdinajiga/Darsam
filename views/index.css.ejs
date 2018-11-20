@@ -1,0 +1,98 @@
+<style>
+    * {box-sizing: border-box;}
+    body {font-family: Arial, Helvetica, sans-serif;}
+    .panel { border-radius: 2; }
+
+    .panel-height { padding-top: 50%; }
+
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+    .navbar {
+    margin-bottom: 50px;
+    border-radius: 0;
+    }
+    
+    /* Remove the jumbotron's default bottom margin */ 
+    .jumbotron { margin-bottom: 0; }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+    background-color: #f2f2f2;
+    padding: 25px;
+    }
+
+    .animate-bottom {
+    position: relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: .5s;
+    animation-name: animatebottom;
+    animation-duration: .5s;
+    }
+
+    @-webkit-keyframes animatebottom {
+    from { bottom: -100px; opacity:0 } 
+    to { bottom: 0px; opacity:1 }
+    }
+
+    @keyframes animatebottom { 
+    from{ bottom: -100px; opacity:0 } 
+    to{ bottom: 0px; opacity:1 }
+    }
+
+    .animate-fade {
+    position: relative;
+    -webkit-animation-name: animateFade;
+    -webkit-animation-duration: .5s;
+    animation-name: animateFade;
+    animation-duration: .5s;
+    }
+
+    @-webkit-keyframes animateFade {
+    from { opacity:0 } 
+    to { opacity:1 }
+    }
+
+    @keyframes animateFade { 
+    from{ opacity:0 } 
+    to{ opacity:1 }
+    }
+
+    .loader {
+        position: inherit;
+        z-index: 1;
+        width: 10vw;
+        height: 10vw;
+        border: .8vw solid #f3f3f3;
+        border-radius: 50%;
+        border-top: .8vw solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+    .little-loader {
+        position: inherit;
+        z-index: 1;
+        width: 3vw;
+        height: 3vw;
+        border: .15vw solid #f3f3f3;
+        border-radius: 50%;
+        border-top: .15vw solid #3498db;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Style the horizontal ruler */
+    hr {
+        border: 1px solid #f1f1f1;
+        margin-bottom: 25px;
+    }
+</style>
