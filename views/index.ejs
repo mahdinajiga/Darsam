@@ -39,7 +39,10 @@
 				<ul class="nav navbar-nav navbar-right">
 					<% if(locals.loggedIn){ %>
 					<li>
-						<a style="cursor: pointer;" id="LogoutBtn" href="/logout"><span class="glyphicon glyphicon-user"></span> خروج!</a>
+						<a style="cursor: pointer;" id="LogoutBtn" href="/logout"><span class="glyphicon glyphicon glyphicon-log-out"></span> خروج</a>
+					</li>
+					<li>
+						<a style="cursor: pointer;" id="UserNameSpan"><span class="glyphicon glyphicon-user"></span> <%= userShow %> </a>
 					</li>
 					<% } else { %>
 					<li>

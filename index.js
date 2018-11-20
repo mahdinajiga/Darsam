@@ -42,7 +42,8 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
 
     app.get('/', function (req, res) {
         if (req.session.user) {
-            res.render('index', { loggedIn: 1 });
+            console.log(req.session.user.userShow);
+            res.render('index', { loggedIn: 1 , userShow: req.session.user.userShow});
         }
         else {
             res.render('index');
@@ -141,7 +142,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                         {
                             var dt = dateTime.create();
                             var formatted = dt.format('Y-m-d H:M:S');
-                            req.session.user = {username : IncomingData['username'] , userType : result[0].userType , CSU : result[0].CSU, lastLogTime : formatted};
+                            req.session.user = {username : IncomingData['username'] , userShow : result[0].userShow , userType : result[0].userType , CSU : result[0].CSU, lastLogTime : formatted};
                             res.end(JSON.stringify({ status : 200 , message: "logged in successfully :D" }));
                         }
                         else
