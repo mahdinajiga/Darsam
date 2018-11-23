@@ -1,13 +1,33 @@
 $(document).ready(function(){
-	//$(".SecondCss").load("style.css");
-	$(".HoverPanel").hover(function(){
-		$(this).css("box-shadow","0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
-	},
-	function(){
-		$(this).css("box-shadow","");
+	
+});
+
+
+function LoadMainDiv() 
+{
+	$("#MainDiv").load("direcList","",function (response,status,xhr) {
+		if (status == "success") {
+			$("#MainDiv").html(response);
+			$("#loader").css("display","none");
+			$("#loader").css("opacity","0");
+			$("#MainDiv").css("opacity","0");
+			$("#MainDiv").css("display","block");
+			$("#MainDiv").animate({opacity: '1'},500);
+			$(".HoverPanel").hover(function(){
+				$(this).css("box-shadow","0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
+			},
+			function(){
+				$(this).css("box-shadow","");
+			});
+		}
 	});
+	//$(".SecondCss").load("style.css");
     $("#LoginBtn").click(function(){
         $("#LoginModal").modal();
+	});
+
+	$("#NewDircBtn").click(function(){
+        $("#NewDircModal").modal();
 	});
 
 	$("#SignupBtn").click(function(){
@@ -135,7 +155,55 @@ $(document).ready(function(){
 			});
 		}
 	});
-});
+
+
+	$("#SubmitNewD").click(function(){
+		$("#SubmitNewD").prop("disabled",true);
+		$("#NDLoad").html('<div class="container little-loader"></div>');
+		if($("#direcNameInp").val()=="" || $("#direcDescInp").val()=="")
+		{
+			$("#NDLoad").html("");
+			alert("لطفا همه فیلد ها را با دقت پر کنید!!!");
+		}
+		else
+		{
+			var DataTSO = {
+				dirName: $("#direcNameInp").val(),
+				dirDesc: $("#direcDescInp").val(),
+				dirPrivacy: 1
+			};
+			if($("#DirecPrivacy").is(':checked'))
+			{
+				DataTSO.dirPrivacy = 2;
+			}
+			var DataTS = "DirecData=" + JSON.stringify(DataTSO);
+			var xp = new XMLHttpRequest();
+			xp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					$("#NDLoad").html("");
+					var oob = JSON.parse(this.responseText);
+					if(oob.status == 200)
+					{
+						alert("اطلاعات با موفقیت ثبت شد");
+						$('#NewDircModal').modal('toggle');
+						setTimeout(function () {
+							location.reload();
+						},1800);
+					}
+					else if(oob.status == 400)
+					{
+						alert(oob.message);
+					}
+				}
+			};
+			xp.open("POST", "/NewDirec");
+			xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xp.send(DataTS);
+		}
+	});
+}
+
+
 
 
 

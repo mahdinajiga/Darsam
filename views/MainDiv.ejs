@@ -1,0 +1,102 @@
+
+<% if(locals.loggedIn){ if(locals.userType == 1) { %>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">دوره های من</div>
+            <div class="panel-body">
+                <% if(locals.SetdirCount == 0) { %>
+                <p>شما هیچ دوره ای را تا به حال ثبت نکرده اید</p>
+
+                <% } else { %>
+                <% locals.SetdirNodes.forEach(function(Node) { %>
+                <div class="col-sm-4">
+                    <div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="onl();">
+                        <div class="panel-heading"><%= Node.dirName %></div>
+                        <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                                alt="Image">
+
+                        </div>
+                        <div class="panel-footer">
+                            <p><span>توضیحات:</span></p><p><%= Node.dirDesc %></p>
+                            <p><span><% if(Node.dirPrivacy==0) { %>دوره غیر فعال است<% }else if(Node.dirPrivacy==1) { %>این دوره عمومی است<% } else if(Node.dirPrivacy==2) {%>این دوره خصوصی است<%}%></span></p>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+                <% } %>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">دوره هایی که شما در آنها عضوید</div>
+            <div class="panel-body">
+            
+                
+
+            </div>
+        </div>
+    </div>
+</div>
+<% } else if(locals.userType == 2) { %>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">دوره های من</div>
+            <div class="panel-body">
+            
+                
+
+            </div>
+        </div>
+    </div>
+</div>
+<% } } %>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl();">
+                <div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
+                <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                        alt="Image">
+
+                </div>
+                <div class="panel-footer">
+                    <p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
+                    <p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
+                    <p>شما میتوانید در این دوره عضو شوید</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">دانشکده برق و کامپیوتر</div>
+                <div class="panel-body">
+                    <!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+        alt="Image">-->
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
+                <div class="panel-body">
+                    <!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+        alt="Image">-->
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<br>

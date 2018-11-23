@@ -17,8 +17,8 @@
 	<div id="JumborId" class="jumbotron" onclick="">
 		<div class="container text-center">
 			<div style="display:block; font-size: 2vw;" id="JataShowUpDiv" class="animate-bottom">
-				<h1>استاد یار</h1>
-				<p>تدریس یار مجازی</p>
+				<h1>دَرسام</h1>
+				<p>استاد یار مجازی</p>
 			</div>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 				<% if(locals.Admin){ %>
 					<a class="navbar-brand" href="http://198.143.181.151">Adminstrator</a>
 				<% } else { %>
-					<a class="navbar-brand" href="http://198.143.181.151">Ostadyar</a>
+					<a class="navbar-brand" href="http://198.143.181.151">Darsam</a>
 				<% } %>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
@@ -42,11 +42,18 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<% if(locals.loggedIn){ %>
+					<% if(locals.userType==1){ %>
+					
 					<li>
-						<a style="cursor: pointer;" id="LogoutBtn" href="/logout"><span class="glyphicon glyphicon glyphicon-log-out"></span> خروج</a>
+						<a style="cursor: pointer;" id="NewDircBtn"><span class="glyphicon glyphicon glyphicon-pencil"></span> ایجاد دوره جدید</a>
 					</li>
+
+					<% }  %>
 					<li>
 						<a style="cursor: pointer;" id="UserNameSpan"><span class="glyphicon glyphicon-user"></span> <%= userShow %> </a>
+					</li>
+					<li>
+						<a style="cursor: pointer;" id="LogoutBtn" href="/logout"><span class="glyphicon glyphicon glyphicon-log-out"></span> خروج</a>
 					</li>
 					<% } else { %>
 					<li>
@@ -67,94 +74,57 @@
 	<div id="MainDiv" style="display: none;">
 
 
-
-
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-4">
-					<div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl();">
-						<div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
-						<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-							 alt="Image">
-
-						</div>
-						<div class="panel-footer">
-							<p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
-							<p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
-							<p>شما میتوانید در این دوره عضو شوید</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="panel panel-primary">
-						<div class="panel-heading">دانشکده برق و کامپیوتر</div>
-						<div class="panel-body">
-							<!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-                alt="Image">-->
-						</div>
-						<div class="panel-footer"></div>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="panel panel-primary">
-						<div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
-						<div class="panel-body">
-							<!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-                alt="Image">-->
-						</div>
-						<div class="panel-footer"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="container">
-			<div class="row">
-				<div class="panel panel-primary">
-					<div class="panel-heading">دوره های من</div>
-					<div class="panel-body">
-
-						<div class="col-sm-4">
-							<div class="panel panel-default">
-								<div class="panel-body">
-									<p>نمونه سوالات جدید</p>
-									<p><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%" alt="Image"></p>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="onl();">
-								<div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
-								<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-									 alt="Image">
-
-								</div>
-								<div class="panel-footer">
-									<p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
-									<p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
-									<p>شما میتوانید در این دوره عضو شوید</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-4">
-							<div class="panel panel-default">
-								<div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
-								<div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-									 alt="Image"></div>
-								<div class="panel-footer"></div>
-							</div>
-						</div>
-
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<br>
-
-
 	</div>
 	<br><br>
+
+
+
+
+
+	<div class="modal fade" id="NewDircModal" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header" style="padding:35px 50px;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4><span class="glyphicon glyphicon-plus"></span> ثبت دوره جدید</h4>
+				</div>
+				<div class="modal-body" style="padding:40px 50px;">
+
+
+
+
+					<div class="form-group">
+						<label for="direcNameInp"><span class="glyphicon glyphicon-record"></span> نام دوره:</label>
+						<input style="text-align: right;" type="text" class="form-control" id="direcNameInp" placeholder="" required>
+					</div>
+
+					<div class="form-group">
+						<label for="direcDescInp"><span class="glyphicon glyphicon-record"></span> توضیحات:</label>
+						<input style="text-align: right;" type="text" class="form-control" id="direcDescInp" placeholder="" required>
+					</div>
+
+					<div class="form-group">
+						<label for="switchCheckDirecPrivacy">دوره خصوصی</label>
+						<label id="switchCheckDirecPrivacy" class="switch">
+							<input id="DirecPrivacy" type="checkbox">
+							<span class="slider round"></span>
+						</label>
+					</div>
+
+
+					<button type="button" id="SubmitNewD" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> ثبت</button>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="dismisModall" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+						لغو</button>
+					<div id="NDLoad"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 
 
 
@@ -283,11 +253,7 @@
 		{
 			$("#Scripts").load("script.js","",function (response,status,xhr) {
 				if (status == "success") {
-					$("#loader").css("display","none");
-					$("#loader").css("opacity","0");
-					$("#MainDiv").css("opacity","0");
-					$("#MainDiv").css("display","block");
-					$("#MainDiv").animate({opacity: '1'},500);
+					LoadMainDiv();
 				}
 			});
 		}

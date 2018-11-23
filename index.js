@@ -8,6 +8,13 @@ var upload = multer();
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var MemcachedStore = require('connect-memcached')(session);
+var nodemailer = require('nodemailer');
+var RandomizedId = require("randomstring");
+var RandomSetupId = RandomizedId.generate(64);
+
+var RootAddressLink = "http://localhost/";
+var AuthJsonContent = JSON.parse(fs.readFileSync('Auth.json'))
+var MailTransporter = nodemailer.createTransport(AuthJsonContent);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,6 +35,10 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 var VERSION = "001";
+var NodesDir = './Nodes';
+if (!fs.existsSync(NodesDir)){
+    fs.mkdirSync(NodesDir);
+}
 
 // MongoDB queries
 var MongoClient = require('mongodb').MongoClient;
@@ -45,9 +56,10 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
             //console.log(req.session.user.userShow);
             if(req.session.user.userType == 0)
             {
-                res.render('index', { loggedIn: 1 , Admin: 1, userShow: req.session.user.userShow});
+                res.render('index', { loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
             }else if(req.session.user.userType == 1)
             {
+
                 res.render('index', { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow});   
             }else if(req.session.user.userType == 2)
             {
@@ -82,16 +94,15 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
             else 
             {
                 var QueryToFindSameUser = { $or: [{ username: IncomingData['username'] }, { userShow: IncomingData['userShow'] }, { email: IncomingData['email'] }] };
-                MainDB.collection("users").find(QueryToFindSameUser).toArray(function (err, result) {
-                    if (err) {
-                        throw err;
+                MainDB.collection("users").find(QueryToFindSameUser).toArray(function (err1, result) {
+                    if (err1) {
+                        throw err1;
                     }
                     if (result.length == 0) {
                         var dt = dateTime.create();
                         var formatted = dt.format('Y-m-d H:M:S');
-                        //GetUserId
                         var UserToSave = {
-                            UserId:0,
+                            UserId:1000,
                             username: IncomingData['username'],
                             userShow: IncomingData['userShow'],
                             email: IncomingData['email'],
@@ -99,7 +110,9 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                             regTime: formatted,
                             lastLogTime : formatted,
                             userType: IncomingData['userType'],
-                            CSU: 1,
+                            CSU: 0,
+                            confirmId: RandomizedId.generate(64),
+                            confirmAns: formatted,
                             DirCount: 0,
                             DirNodes: [],
                             NotifCount: 0,
@@ -113,9 +126,34 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                             UserToSave.SetdirNodes = [];
                             UserToSave.SignupDesc = IncomingData['SignupDesc'];
                         }
-                        MainDB.collection("users").insertOne(UserToSave, function (err, resu) {
-                            if (err) throw err;
-                            res.end(JSON.stringify({ status : 200 , message: "signed up successfully :D" }));
+                        MainDB.collection("LastId").find({IdType:1}).toArray(function (LIDErr,LastIdRes) {
+                            if(LIDErr) { throw LIDErr; }
+                            if(LastIdRes.length != 0)
+                            {
+                                UserToSave.UserId = LastIdRes[0].value;
+                                MainDB.collection("LastId").updateOne({IdType:1},{$inc:{value:1}});
+                            }
+                            else
+                            {
+                                MainDB.collection("LastId").insertOne({IdType:1,value:1000,VER:VERSION});
+                            }
+                            MainDB.collection("users").insertOne(UserToSave, function (err, resu) {
+                                if (err) throw err;
+                                res.end(JSON.stringify({ status : 200 , message: "signed up successfully :D" }));
+                            });
+                            var mail = {
+                                from: AuthJsonContent.auth.user,
+                                to: UserToSave.email,
+                                subject: 'درخواست عضویت سایت درسام',
+                                text: "<html><body><p>"+UserToSave.userShow+" عزیز!</p><p>از عضویت سما در این سایت متشکریم.جهت تکمیل عضویت کافیست روی لینک زیر کلیک کنید...</p><p><a href='"+RootAddressLink+"conf?id="+UserToSave.confirmId+"'>تکمیل عضویت</a></p><p>با تشکر<br>سایت درسام</p></body></html>"
+                            };
+                            MailTransporter.sendMail(mail, function(error, info){
+                                if (error) {
+                                  console.log(error);
+                                } else {
+                                  console.log('Email sent: ' + info.response);
+                                }
+                            }); 
                         });
                     }
                     else {
@@ -147,11 +185,11 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                         res.send(JSON.stringify({ status : 403 , message: "Invalid credentials!" }));
                     }
                     else {
-                        if(result[0].password == IncomingData['password'])
+                        if(result[0].password == IncomingData['password'] && result[0].confirmId==1)
                         {
                             var dt = dateTime.create();
                             var formatted = dt.format('Y-m-d H:M:S');
-                            req.session.user = {username : IncomingData['username'] , userShow : result[0].userShow , userType : result[0].userType , CSU : result[0].CSU, lastLogTime : formatted};
+                            req.session.user = {username : IncomingData['username'] , UserId : result[0].UserId , userShow : result[0].userShow , userType : result[0].userType , CSU : result[0].CSU, lastLogTime : formatted};
                             res.end(JSON.stringify({ status : 200 , message: "logged in successfully :D" }));
                         }
                         else
@@ -172,6 +210,167 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
         res.redirect('/');
     });
 
-    app.listen(80);
+
+    app.get('/direcList', function (req, res) {
+        if (req.session.user) {
+            if(req.session.user.userType == 0)
+            {
+                res.render('MainDiv', { loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
+            }else if(req.session.user.userType == 1)//Master
+            {
+                var QueryToFindUser = {  username: req.session.user.username };
+                MainDB.collection("users").find(QueryToFindUser).toArray(function (err, result) {
+                    if (err) {
+                        throw err;
+                    }
+                    if (result.length == 0) {
+                        res.render('MainDiv', { Error: 1, Status: 403});
+                    }
+                    else {
+                        var SetdirCoun = result[0].SetdirCount;
+                        if(SetdirCoun==0)
+                        {
+                            res.render('MainDiv', { loggedIn: 1 , userType: 1, SetdirCount:0 , userShow: req.session.user.userShow});   
+                        }
+                        else
+                        {
+                            var Response = { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow };
+                            Response['SetdirCount'] = SetdirCoun; 
+                            var DirecsList=[];
+                            QueryToFindDirec = [];
+                            for(var inde=0;inde<SetdirCoun;inde++)
+                            {
+                                QueryToFindDirec[inde] = { dirId : result[0].SetdirNodes[inde] };
+                            }
+                            MainDB.collection("dircs").find({$or: QueryToFindDirec}).toArray(function (errOnDire, DirecResult) {
+                                if (errOnDire) {
+                                    throw errOnDire;
+                                }
+                                if (DirecResult.length == 0) {
+                                    //res.render('MainDiv', { Error: 1, Status: 403});
+                                }
+                                else 
+                                {
+                                    for(var ind=0;ind<DirecResult.length;ind++)
+                                    {
+                                        DirecsList.push({dirName:DirecResult[ind].dirName, dirDesc:DirecResult[ind].dirDesc, dirPrivacy:DirecResult[ind].dirPrivacy});
+                                    }
+                                }
+                                Response['SetdirNodes'] = DirecsList; 
+                                res.render('MainDiv', Response);
+                            });   
+                        }
+                    }
+                });
+            }else if(req.session.user.userType == 2)
+            {
+                res.render('MainDiv', { loggedIn: 1 , userType: 2, userShow: req.session.user.userShow});
+            }
+        }
+        else {
+            res.render('MainDiv');
+        }
+    });
+
+
+
+    app.post('/NewDirec', function (req, res) {
+        if (req.session.user && req.session.user.userType==1) {
+            var IncomingData = JSON.parse(req.body.DirecData); // parsing incoming data in JSON
+            if (!IncomingData['dirName'] || !IncomingData['dirDesc']) 
+            {
+                res.send(JSON.stringify({ status : 401 , message: "Invalid details!" }));
+            }
+            else 
+            {
+                var dt = dateTime.create();
+                var formatted = dt.format('Y-m-d H:M:S');
+                var ThisDirecId=1000;
+                MainDB.collection("LastId").find({IdType:2}).toArray(function (LIDErr,LastIdRes) {
+                    if(LIDErr) { throw LIDErr; }
+                    if(LastIdRes.length != 0)
+                    {
+                        ThisDirecId = LastIdRes[0].value;
+                        MainDB.collection("LastId").updateOne({IdType:2},{$inc:{value:1}});
+                    }
+                    else
+                    {
+                        MainDB.collection("LastId").insertOne({IdType:2,value:1000,VER:VERSION});
+                        ThisDirecId=1000;
+                    }
+                    fs.mkdirSync(NodesDir+"/"+ThisDirecId);
+                    var DirecToSave = {
+                        dirId:          ThisDirecId,
+                        dirName:        IncomingData['dirName'],
+                        dirDesc:        IncomingData['dirDesc'],
+                        dirPrivacy:     IncomingData['dirPrivacy'],
+                        createdTime:    formatted,
+                        creatorUserId:  req.session.user.UserId,
+                        dbNodes:        NodesDir+"/"+ThisDirecId,
+                        postNodesCount: 0,
+                        pinnedNode:     0,
+                        LastPostId:     10,
+                        LastAssignId:   10,
+                        subsCount:      0,
+                        subsNode:       [],
+                        ASMNTSCount:    0,
+                        ASMNTS:         [],
+                        VER:            VERSION
+                    }
+                    
+                    MainDB.collection("dircs").insertOne(DirecToSave, function (err, resu) {
+                        if (err) throw err;
+                        MainDB.collection("users").updateOne({ username: req.session.user.username }, { $push: { SetdirNodes: ThisDirecId}, $inc: {SetdirCount:1} } );
+                        res.end(JSON.stringify({ status : 200 , message: "direc saved successfully :D" }));
+                    });
+                });
+            }
+        }
+        else {
+            res.send(JSON.stringify({ status : 400 , message: "برای ثبت دوره باید وارد شوید!!!" }));
+        }
+    });
+
+
+
+    app.get('/data', function (req, res) {
+        if (req.session.user) 
+        {
+            res.send(JSON.stringify({reqSessionUser:req.session.user,Reqq:req.session}));
+        }
+        else
+        {
+            res.redirect('/');
+        }
+    });
+
+    app.get('/conf', function (req, res) {
+        if(!req.query.id)
+            res.send("<html><head><title>Darsam</title></head><body>requested link expired!!!<br>for more information contact <a href='"+RootAddressLink+"'>darsam.mail@gmail.com</a></body></html>");
+        MainDB.collection("users").find({confirmId:req.query.id}).toArray(function (LIDErr,LastIdRes) {
+            if(LIDErr) { throw LIDErr; }
+            if(LastIdRes.length != 0)
+            {
+                var dt = dateTime.create();
+                var formatted = dt.format('Y-m-d H:M:S');
+                var SCSU = 1;
+                if(LastIdRes[0].userType==1)
+                    SCSU=LastIdRes[0].CSU;
+                MainDB.collection("users").updateOne({UserId:LastIdRes[0].UserId},{$set:{confirmAns:formatted,confirmId:1,CSU:SCSU}});
+                res.redirect("/");
+            }
+            else
+            {
+                res.send("<html><head><title>Darsam</title></head><body>requested link expired!!!<br>for more information contact <a href='"+RootAddressLink+"'>darsam.mail@gmail.com</a></body></html>");
+            }
+        });
+    });
+
+
+
+
+    app.listen(80,function () {
+        console.log("service started...");
+    });
 
 });// End of MongoClient.connect
