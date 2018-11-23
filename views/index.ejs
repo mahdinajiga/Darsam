@@ -30,7 +30,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://198.143.181.151">Ostadyar</a>
+				<% if(locals.Admin){ %>
+					<a class="navbar-brand" href="http://198.143.181.151">Adminstrator</a>
+				<% } else { %>
+					<a class="navbar-brand" href="http://198.143.181.151">Ostadyar</a>
+				<% } %>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav">

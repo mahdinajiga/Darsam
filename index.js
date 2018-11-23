@@ -31,7 +31,7 @@ var VERSION = "001";
 
 // MongoDB queries
 var MongoClient = require('mongodb').MongoClient;
-var DBurl = "mongodb://198.143.181.151:27017/";
+var DBurl = "mongodb://ostadyarAdmin:93Ddl8p16@198.143.181.151:16937/ostadyar";
 
 // MongoDB Settup
 var MainDB;
@@ -42,8 +42,17 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
 
     app.get('/', function (req, res) {
         if (req.session.user) {
-            console.log(req.session.user.userShow);
-            res.render('index', { loggedIn: 1 , userShow: req.session.user.userShow});
+            //console.log(req.session.user.userShow);
+            if(req.session.user.userType == 0)
+            {
+                res.render('index', { loggedIn: 1 , Admin: 1, userShow: req.session.user.userShow});
+            }else if(req.session.user.userType == 1)
+            {
+                res.render('index', { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow});   
+            }else if(req.session.user.userType == 2)
+            {
+                res.render('index', { loggedIn: 1 , userType: 2, userShow: req.session.user.userShow});
+            }
         }
         else {
             res.render('index');
