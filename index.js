@@ -78,11 +78,26 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
     });
 
     app.get('/style.css', function (req, res) {
-        res.sendFile(__dirname + "/static/style.css");
+        if(req.query.reqid)
+        {
+            res.sendFile(__dirname + "/static/style.css");
+        }
+        else
+        {
+            res.redirect('/style.css?reqid='+RandomizedId.generate(32));
+        }
     });
 
     app.get('/script.js', function (req, res) {
-        res.sendFile(__dirname + "/static/script.js");
+        if(req.query.reqid)
+        {
+            res.sendFile(__dirname + "/static/script.js");
+        }
+        else
+        {
+            res.redirect('/script.js?reqid='+RandomizedId.generate(32));
+        }
+        
     });
 
 
@@ -151,7 +166,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                                 from: AuthJsonContent.auth.user,
                                 to: UserToSave.email,
                                 subject: 'درخواست عضویت سایت درسام',
-                                text: "<html><body><p>"+UserToSave.userShow+" عزیز!</p><p>از عضویت سما در این سایت متشکریم.جهت تکمیل عضویت کافیست روی لینک زیر کلیک کنید...</p><p><a href='"+RootAddressLink+"conf?id="+UserToSave.confirmId+"'>تکمیل عضویت</a></p><p>با تشکر<br>سایت درسام</p></body></html>"
+                                text: "<html><body><p>"+UserToSave.userShow+" عزیز!</p><p>از عضویت شما در این سایت متشکریم.جهت تکمیل عضویت کافیست روی لینک زیر کلیک کنید...</p><p><a href='"+RootAddressLink+"conf?id="+UserToSave.confirmId+"'>تکمیل عضویت</a></p><p>با تشکر<br>سایت درسام</p></body></html>"
                             };
                             MailTransporter.sendMail(mail, function(error, info){
                                 if (error) {
@@ -215,7 +230,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
             MainDB.collection("users").updateOne({ username: req.session.user.username }, { $set: { "lastLogTime": req.session.user.lastLogTime } });
             req.session.destroy();
         }
-        res.redirect('/');
+        res.redirect("/?reqid="+RandomizedId.generate(32));
     });
 
 
@@ -223,7 +238,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
         if (req.session.user) {
             if(req.session.user.userType == 0)
             {
-                res.render('MainDiv', { loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
+                res.render('MainDiv', { direcs : 1 , loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
             }else if(req.session.user.userType == 1)//Master
             {
                 var QueryToFindUser = {  username: req.session.user.username };
@@ -238,11 +253,13 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                         var SetdirCoun = result[0].SetdirCount;
                         if(SetdirCoun==0)
                         {
-                            res.render('MainDiv', { loggedIn: 1 , userType: 1, SetdirCount:0 , userShow: req.session.user.userShow});   
+                            GetLatestDircs(1, 12, function (conFund, Fund) {
+                                res.render('MainDiv', { direcs : 1 , loggedIn: 1 , userType: 1, SetdirCount:0 , userShow: req.session.user.userShow , countFound : conFund , Found : Fund});   
+                            });
                         }
                         else
                         {
-                            var Response = { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow };
+                            var Response = { direcs : 1 , loggedIn: 1 , userType: 1, userShow: req.session.user.userShow };
                             Response['SetdirCount'] = SetdirCoun; 
                             var DirecsList=[];
                             QueryToFindDirec = [];
@@ -265,21 +282,63 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                                     }
                                 }
                                 Response['SetdirNodes'] = DirecsList; 
-                                res.render('MainDiv', Response);
+                                GetLatestDircs(1, 12, function (conFund, Fund) {
+                                    Response['countFound'] = conFund;
+                                    Response['Found'] = Fund;
+                                    res.render('MainDiv', Response);
+                                });
                             });   
                         }
                     }
                 });
             }else if(req.session.user.userType == 2)
             {
-                res.render('MainDiv', { loggedIn: 1 , userType: 2, userShow: req.session.user.userShow});
+                GetLatestDircs(1, 12, function (conFund, Fund) {
+                    res.render('MainDiv', { direcs : 1 , loggedIn: 1 , userType: 2, userShow: req.session.user.userShow , countFound : conFund , Found : Fund});
+                });
+                
             }
         }
         else {
-            res.render('MainDiv');
+            GetLatestDircs(1, 12, function (conFund, Fund) {
+                res.render('MainDiv', {direcs : 1 , countFound : conFund , Found : Fund});
+            });
         }
     });
 
+    function GetLatestDircs(pageNum, pageLen, callback) 
+    {
+        var FoundArray = [];
+        MainDB.collection("dircs").find().sort({createdTime: 1}).skip(pageNum>0?((pageNum-1)*pageLen):0).limit(pageLen).toArray(function (err, result) {
+            if (err) {
+                throw err;
+            }
+            if (result.length == 0) {
+                callback(0,[]);
+            }
+            else 
+            {
+                for (var i = 0; i < result.length; i++) 
+                {
+                    FoundArray.push({
+                        dirId : result[i].dirId , dirName : result[i].dirName , dirDesc : result[i].dirDesc,
+                        dirPrivacy : result[i].dirPrivacy , createdTime : result[i].createdTime,
+                        creatorUserShow : result[i].creatorUserShow , creatorUserId : result[i].creatorUserId,
+                        subsCount : result[i].subsCount
+                    });
+                }
+                callback(result.length, FoundArray);
+            }
+        });
+    }
+
+
+
+
+
+    app.all('/dir', function (req, res) { //        direc content
+
+    });
 
 
     app.post('/NewDirec', function (req, res) {
@@ -314,6 +373,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                         dirPrivacy:     IncomingData['dirPrivacy'],
                         createdTime:    formatted,
                         creatorUserId:  req.session.user.UserId,
+                        creatorUserShow:req.session.user.userShow,
                         dbNodes:        NodesDir+"/"+ThisDirecId,
                         postNodesCount: 0,
                         pinnedNode:     0,
@@ -348,7 +408,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
         }
         else
         {
-            res.redirect('/');
+            res.redirect("/?reqid="+RandomizedId.generate(32));
         }
     });
 
@@ -365,7 +425,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                 if(LastIdRes[0].userType==1)
                     SCSU=LastIdRes[0].CSU;
                 MainDB.collection("users").updateOne({UserId:LastIdRes[0].UserId},{$set:{confirmAns:formatted,confirmId:1,CSU:SCSU}});
-                res.redirect("/");
+                res.redirect("/?reqid="+RandomizedId.generate(32));
             }
             else
             {

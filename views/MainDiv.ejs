@@ -1,5 +1,4 @@
-
-<% if(locals.loggedIn){ if(locals.userType == 1) { %>
+<%if(locals.direcs){ if(locals.loggedIn){ if(locals.userType == 1) { %>
 <div class="container">
     <div class="row">
         <div class="panel panel-primary">
@@ -43,6 +42,7 @@
     </div>
 </div>
 <% } else if(locals.userType == 2) { %>
+
 <div class="container">
     <div class="row">
         <div class="panel panel-primary">
@@ -55,48 +55,73 @@
         </div>
     </div>
 </div>
-<% } } %>
-
-
+<%}%>
+<hr><hr>
 <div class="container">
     <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <% if(locals.countFound == 0) { %>
+                <p>هیچ دوره ای تا به حال ثبت نشده</p>
+
+                <% } else { %>
+                <% locals.Found.forEach(function(Node) { %>
+                <div class="col-sm-4">
+                    <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl(<%= Node.dirId %>);">
+                        <div class="panel-heading"><%= Node.dirName %></div>
+                        <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                                alt="Image">
+
+                        </div>
+                        <div class="panel-footer">
+                            <p><span>توضیحات:</span></p><p><%= Node.dirDesc %></p><hr>
+                            <p><span>تاریخ ایجاد:</span></p><p><%= Node.createdTime %></p><hr>
+                            <p><span>توسط:</span></p><p><%= Node.creatorUserShow %></p><hr>
+                            <p><span>تعداد اعضا:</span></p><p><%= Node.subsCount %></p><hr>
+                            <p><span><% if(Node.dirPrivacy==0) { %>دوره غیر فعال است<% }else if(Node.dirPrivacy==1) { %>دوره عمومی<% } else if(Node.dirPrivacy==2) {%>دوره خصوصی<%}%></span></p>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+                <% } %>
+            </div>
+            <div class="panel-footer"> Pagination ... </div>
+        </div>
+    </div>
+</div>
+
+<%}else{%>
+<div class="container">
+    <div class="row">
+        <% if(locals.countFound == 0) { %>
+        <p>هیچ دوره ای تا به حال ثبت نشده</p>
+
+        <% } else { %>
+        <% locals.Found.forEach(function(Node) { %>
         <div class="col-sm-4">
-            <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl();">
-                <div class="panel-heading">دانشکده جغرافیا و برنامه ریزی</div>
+            <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl(<%= Node.dirId %>);">
+                <div class="panel-heading"><%= Node.dirName %></div>
                 <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
                         alt="Image">
 
                 </div>
                 <div class="panel-footer">
-                    <p><span>نام دبیر:</span><span> دکتر سالویگ</span></p>
-                    <p><span>توضیحات:</span><span>مبانی کامپیوتر و برنامه نویسی</span></p>
-                    <p>شما میتوانید در این دوره عضو شوید</p>
+                    <p><span>توضیحات:</span></p><p><%= Node.dirDesc %></p><hr>
+                    <p><span>تاریخ ایجاد:</span></p><p><%= Node.createdTime %></p><hr>
+                    <p><span>توسط:</span></p><p><%= Node.creatorUserShow %></p><hr>
+                    <p><span>تعداد اعضا:</span></p><p><%= Node.subsCount %></p><hr>
+                    <p><span><% if(Node.dirPrivacy==0) { %>دوره غیر فعال است<% }else if(Node.dirPrivacy==1) { %>دوره عمومی<% } else if(Node.dirPrivacy==2) {%>دوره خصوصی<%}%></span></p>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">دانشکده برق و کامپیوتر</div>
-                <div class="panel-body">
-                    <!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-        alt="Image">-->
-                </div>
-                <div class="panel-footer"></div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">دانشکده ادبیات فارسی و زبانهای خارجی</div>
-                <div class="panel-body">
-                    <!--<img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
-        alt="Image">-->
-                </div>
-                <div class="panel-footer"></div>
-            </div>
-        </div>
+        <% }); %>
+        <% } %>
     </div>
 </div>
+<% } } else if(locals.dir){%>
 
 
 
+
+<% } %>
 <br>

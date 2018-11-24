@@ -72,7 +72,7 @@ function LoadMainDiv()
 					var oob = JSON.parse(this.responseText);
 					if(oob.status == 200)
 					{
-						location.reload();
+						window.location.replace("/?reqid=7489");
 					}
 					else if(oob.status == 400)
 					{
@@ -128,7 +128,7 @@ function LoadMainDiv()
 						alert("اطلاعات با موفقیت ثبت شد");
 						$('#SignupModal').modal('toggle');
 						setTimeout(function () {
-							location.reload();
+							window.location.replace("/?reqid=7489");
 						},2500);
 					}
 					else if(oob.status == 400)
@@ -193,7 +193,7 @@ function LoadMainDiv()
 						alert("اطلاعات با موفقیت ثبت شد");
 						$('#NewDircModal').modal('toggle');
 						setTimeout(function () {
-							location.reload();
+							window.location.replace("/?reqid=7489");
 						},1800);
 					}
 					else if(oob.status == 400)
@@ -215,11 +215,13 @@ function LoadMainDiv()
 
 
 
-function onl() {
+function onl(inp) {
 	//$("#MainDiv").fadeOut();
 	$("#MainDiv").animate({opacity: '0'},500,function () {
 		//$("#MainDiv").html("Data");
-		$("#MainDiv").animate({opacity: '1'},500);
+		$("#MainDiv").animate({opacity: '1'},500,function () {
+			alert(inp);
+		});
 	});
 
 	//$("#loader").animate({display: 'block'});
