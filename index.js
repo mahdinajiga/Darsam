@@ -23,7 +23,6 @@ app.use(cookieParser());
 app.use(session({
     secret: '4EV6S1CSV61G37G8DF9T3D8DE46EV5FSX79TSG',
     key: 'ssid',
-    proxy: 'true',
     store: new MemcachedStore({
         hosts: ['198.143.181.151:11211'], //this should be where your Memcached server is running
         secret: '793E6STG1GS9DDX1CEG468V37V4FS5ST' // Optionally use transparent encryption for memcache session data 
@@ -190,7 +189,9 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
                             var dt = dateTime.create();
                             var formatted = dt.format('Y-m-d H:M:S');
                             req.session.user = {username : IncomingData['username'] , UserId : result[0].UserId , userShow : result[0].userShow , userType : result[0].userType , CSU : result[0].CSU, lastLogTime : formatted};
-                            res.end(JSON.stringify({ status : 200 , message: "logged in successfully :D" }));
+                            req.session.save(function (SaveErr) {
+                                res.end(JSON.stringify({ status : 200 , message: "logged in successfully :D" }));
+                            });
                         }
                         else
                         {
