@@ -51,22 +51,29 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
     MainDB = db.db("ostadyar");
 
     app.get('/', function (req, res) {
-        if (req.session.user) {
-            //console.log(req.session.user.userShow);
-            if(req.session.user.userType == 0)
-            {
-                res.render('index', { loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
-            }else if(req.session.user.userType == 1)
-            {
+        if(req.query.reqid)
+        {
+            if (req.session.user) {
+                //console.log(req.session.user.userShow);
+                if(req.session.user.userType == 0)
+                {
+                    res.render('index', { loggedIn: 1 , userType: 0, Admin: 1, userShow: req.session.user.userShow});
+                }else if(req.session.user.userType == 1)
+                {
 
-                res.render('index', { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow});   
-            }else if(req.session.user.userType == 2)
-            {
-                res.render('index', { loggedIn: 1 , userType: 2, userShow: req.session.user.userShow});
+                    res.render('index', { loggedIn: 1 , userType: 1, userShow: req.session.user.userShow});   
+                }else if(req.session.user.userType == 2)
+                {
+                    res.render('index', { loggedIn: 1 , userType: 2, userShow: req.session.user.userShow});
+                }
+            }
+            else {
+                res.render('index');
             }
         }
-        else {
-            res.render('index');
+        else
+        {
+            res.redirect("/?reqid="+RandomizedId.generate(32));
         }
     });
 
@@ -212,7 +219,7 @@ MongoClient.connect(DBurl, function (MongoConErr, db)
     });
 
 
-    app.get('/direcList', function (req, res) {
+    app.all('/direcList', function (req, res) {
         if (req.session.user) {
             if(req.session.user.userType == 0)
             {

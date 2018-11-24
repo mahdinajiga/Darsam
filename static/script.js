@@ -5,9 +5,10 @@ $(document).ready(function(){
 
 function LoadMainDiv() 
 {
-	$("#MainDiv").load("direcList","",function (response,status,xhr) {
-		if (status == "success") {
-			$("#MainDiv").html(response);
+	var xp = new XMLHttpRequest();
+	xp.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 200) {
+			$("#MainDiv").html(this.responseText);
 			$("#loader").css("display","none");
 			$("#loader").css("opacity","0");
 			$("#MainDiv").css("opacity","0");
@@ -20,7 +21,12 @@ function LoadMainDiv()
 				$(this).css("box-shadow","");
 			});
 		}
-	});
+	};
+	xp.open("POST", "/direcList");
+	xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	var d = new Date();
+	xp.send({Time:d.getTime});
+	
 	//$(".SecondCss").load("style.css");
     $("#LoginBtn").click(function(){
         $("#LoginModal").modal();
