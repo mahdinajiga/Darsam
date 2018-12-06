@@ -33,11 +33,11 @@
 				<% if(locals.Admin){ %>
 					<a class="navbar-brand" href="http://198.143.181.151">Adminstrator</a>
 				<% } else { %>
-					<a class="navbar-brand" href="http://198.143.181.151">Darsam</a>
+					<a class="navbar-brand" href="<%- locals.serverAddress %>">Darsam</a>
 				<% } %>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
-				<ul class="nav navbar-nav">
+				<ul class="nav navbar-nav" id="navbarPaths">
 					<!---- <li class="active"><a href="#">خانه</a></li>-->
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

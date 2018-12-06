@@ -1,8 +1,3 @@
-$(document).ready(function(){
-	
-});
-
-
 function LoadMainDiv() 
 {
 	var xp = new XMLHttpRequest();
@@ -215,14 +210,106 @@ function LoadMainDiv()
 
 
 
-function onl(inp) {
-	//$("#MainDiv").fadeOut();
-	$("#MainDiv").animate({opacity: '0'},500,function () {
-		//$("#MainDiv").html("Data");
-		$("#MainDiv").animate({opacity: '1'},500,function () {
-			alert(inp);
+function LdDir(dId) { // goto selected direc(dId)
+	$("#MainDiv").animate({opacity: '0'},250,function () {
+		$("#MainDiv").css("display","none");
+		$("#loader").css("opacity","0");
+		$("#loader").css("display","block");
+		$("#loader").animate({opacity: '1'},250,function () {
+			var xp = new XMLHttpRequest();
+			var DataTS = "ReqData=" + JSON.stringify({
+				drId : dId
+			});
+			xp.onreadystatechange = function () {
+				if (this.readyState == 4 && this.status == 200) {
+					var Resp = JSON.parse(this.responseText);
+					$("#MainDiv").html(Resp.htm);
+					$("#navbarPaths").html(Resp.nav);
+					$("#loader").css("display","none");
+					$("#loader").css("opacity","0");
+					$("#MainDiv").css("opacity","0");
+					$("#MainDiv").css("display","block");
+					$("#MainDiv").animate({opacity: '1'},500);
+					$(".HoverPanel").hover(function(){
+						$(this).css("box-shadow","0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)");
+					},
+					function(){
+						$(this).css("box-shadow","");
+					});
+				}
+			};
+			xp.open("POST", "/dir");
+			xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xp.send(DataTS);
 		});
 	});
+}
 
-	//$("#loader").animate({display: 'block'});
+
+function newDircPost()
+{
+    var currentBtn = document.getElementById("submitPostCont");
+    currentBtn.onclick="";
+	currentBtn.innerHTML="لطفا کمی صبر کنید...";
+	var dirIdToSavePost = arguments[0];
+	var DataTS = { postContent : document.getElementById("postContent").value , postTitle : document.getElementById("postTitle").value , dirId : dirIdToSavePost};
+    var xp = new XMLHttpRequest();
+    xp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+			var Resp = JSON.parse(this.responseText);
+			if(Resp.message)
+			{
+				alert(Resp.message);
+			}
+			LdDir(dirIdToSavePost);
+        }
+    };
+    xp.open("POST", "/newDirPost");
+    xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xp.send("ReqData="+JSON.stringify(DataTS));
+}
+
+
+
+function removePost()
+{
+	var dirIdToRemovePost = arguments[0];
+	var DataTS = { postId : arguments[1] , dirId : dirIdToRemovePost};
+    var xp = new XMLHttpRequest();
+    xp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+			var Resp = JSON.parse(this.responseText);
+			if(Resp.message)
+			{
+				alert(Resp.message);
+			}
+			LdDir(dirIdToRemovePost);
+        }
+    };
+    xp.open("POST", "/removePost");
+    xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xp.send("ReqData="+JSON.stringify(DataTS));
+}
+
+
+
+function confirmusertojoin()
+{
+    var NextBtnId = "ConfUsrToJoin1";
+    if(arguments[0]==1) { NextBtnId = "ConfUsrToJoin0"; }
+    document.getElementById(NextBtnId).innerHTML = "";
+    var currentBtn = document.getElementById("ConfUsr"+arguments[1]);
+    currentBtn.onclick="";
+    currentBtn.innerHTML="لطفا کمی صبر کنید...";
+    var xp = new XMLHttpRequest();
+    xp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var Resp = JSON.parse(this.responseText);
+            document.getElementById("userdiv"+Resp.userId).innerHTML = "";
+            alert(Resp.Message);
+        }
+    };
+    xp.open("POST", "/sendConfReq");
+    xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xp.send("ReqData="+JSON.stringify({ "reqType": arguments[0] , "dirId" : Number(arguments[2]) , "userId" : arguments[1] }));
 }

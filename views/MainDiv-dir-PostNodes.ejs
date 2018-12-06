@@ -1,0 +1,31 @@
+<% locals.dbNodes.forEach(function(Node) { %>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <%- Node.postTitle %>
+            <% if(locals.master) {%>
+            <button style="margin-bottom: 2px;" type="button" id="removePostBtn<%=Node.postId%>" onclick="this.innerHTML='لطفا کمی صبر کنید...'; this.onclick=''; removePost(<%= locals.dirId %>, <%- Node.postId %>);" class="btn btn-danger pull-left">حذف پست</button>
+            <% } %>
+        </div>
+        <div class="panel-body">
+            <%- Node.Message %>
+        </div>
+        <div class="panel-footer">
+            <div class="pull-left"><span class="glyphicon glyphicon-user"></span><span><%= Node.seenCount %></span></div>
+            <span class="glyphicon glyphicon-calendar"></span><span><%= Node.createdTime %></span>
+        </div>
+    </div>
+
+<% }); %>
+
+<% if(locals.postNodesCount == 0) {%>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div style="font-size: 2vw;" class="text-center">
+            <h1>مطلبی برای نمایش وجود ندارد !!!</h1>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <p><%= CurrTime %></p>
+    </div>
+</div>
+<% } %>

@@ -1,0 +1,121 @@
+
+<% if(locals.RegisteredOnDir==1) /* dircs public or user is submitted to dirc*/ {%>
+
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><%= dirName %></div>
+            <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                    alt="Image">
+
+            </div>
+            <div class="panel-footer">
+                <p><span>توضیحات:</span></p><p><%= dirDesc %></p><hr>
+                <p><span>تاریخ ایجاد:</span></p><p><%= createdTime %></p><hr>
+                <p><span>توسط:</span></p><p><%= creatorUserShow %></p><hr>
+                <p><span>تعداد اعضا:</span></p><p><%= subsCount %></p><hr>
+                <% if(locals.submitted == 1) { %>
+                <p><button type="button" id="SubForDirBtn" onclick="SubmitForDir();" class="btn btn-danger">لغو عضویت</button></p>
+                <% } else { %>
+                <p><button type="button" id="SubForDirBtn" onclick="SubmitForDir();" class="btn btn-primary">عضویت</button></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col-sm-8">
+        <% if(locals.dirPrivacy==0) { %>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div style="font-size: 2vw;" class="text-center">
+                    <h1>دوره غیرفعال</h1>
+                    <p>این دوره حذف شده. برای اطلاعات بیشتر با مدرس دوره تماس بگیرید.</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p><%= CurrTime %></p>
+            </div>
+        </div>
+        <%} else { %>
+
+        <% include MainDiv-dir-PostNodes.ejs %>
+
+        <% } %>
+    </div>
+</div>
+
+
+<% } else { %>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><%= dirName %></div>
+            <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                    alt="Image">
+
+            </div>
+            <div class="panel-footer">
+                <p><span>توضیحات:</span></p><p><%= dirDesc %></p><hr>
+                <p><span>تاریخ ایجاد:</span></p><p><%= createdTime %></p><hr>
+                <p><span>توسط:</span></p><p><%= creatorUserShow %></p><hr>
+                <p><span>تعداد اعضا:</span></p><p><%= subsCount %></p><hr>
+                <p class="text-center"><button type="button" onclick="$('#RegisterDir').modal();" class="btn btn-primary">درخواست عضویت</button></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div style="font-size: 2vw;" class="text-center">
+                    <% if(Reqed == 1) {%>
+                    <h1>درخواست عضویت شما توسط مدرس رد شده است!!!</h1>
+                    <p>میتوانید دوباره برای عضویت درخواست خود را ارسال کنید.</p>
+                    <p><button type="button" onclick="$('#RegisterDir').modal();" class="btn btn-primary">درخواست عضویت</button></p>
+                    <p>پس از تایید مدرس دوره میتوانید مطالب دوره را مرور کنید</p>
+                    <% } else {%>
+                    <h1>403 !!!</h1>
+                    <p>این دوره خصوصی است</p>
+                    <p><button type="button" onclick="$('#RegisterDir').modal();" class="btn btn-primary">درخواست عضویت</button></p>
+                    <p>پس از تایید مدرس دوره میتوانید مطالب دوره را مرور کنید</p>
+                    <% } %>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p><%= CurrTime %></p>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="RegisterDir" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="padding:35px 50px;">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4><span class="glyphicon glyphicon-lock"></span> درخواست عضویت</h4>
+				</div>
+				<div class="modal-body" style="padding:40px 50px;">
+                    <% if(Reqed==2) { %>
+                    <p>شما امکان عضویت در این دوره را ندارید.</p>
+                    <p>برای اطلاعات بیشتر با <a href="darsam.mail@gmail.com">ما تماس بگیرید</a></p>
+                    <% } else { if(Reqed==0) { %>
+                    <p>درخواست قبلی شما تاکنون توسط مدرس دوره بررسی نشده.</p>
+                    <p>برای تغییر متن درخواست قبلی، دوباره فرم زیر را پر و ارسال کنید.</p>
+                    <hr>
+                    <% } %>
+					<div class="form-group">
+						<label for="UserDes">خودتان را معرفی کنید:</label>
+						<textarea class="form-control" rows="5" id="UserDes"></textarea>
+					</div>
+					<button type="button" onclick="SendReg();" id="SubmitReg" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> ارسال درخواست عضویت</button>
+                    <% } %>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="dismisModall" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+						لغو</button>
+						<div id="RegLoad"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<% } %>

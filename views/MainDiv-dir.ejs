@@ -1,0 +1,235 @@
+<div class="container" style="margin-top:30px">
+<% if(locals.error) {%>
+	<div style="font-size: 3vw;" class="text-center">
+		<h1>404</h1>
+		<p>دوره ای با این مشخصات ثبت نشده !!!</p>
+	</div>
+<% } else if(locals.loggedIn) { if(locals.master) {%>
+
+<div class="row">
+
+
+
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><%= dirName %></div>
+            <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                    alt="Image">
+
+            </div>
+            <div class="panel-footer">
+                <p><span>توضیحات:</span></p><p><%= dirDesc %></p><hr>
+                <p><span>تاریخ ایجاد:</span></p><p><%= createdTime %></p><hr>
+                <p><span>توسط:</span></p><p><%= creatorUserShow %></p><hr>
+                <p><span>تعداد اعضا:</span></p><p><%= subsCount %></p><hr>
+            </div>
+        </div>
+        <% if(locals.ReqCountsForDir != 0) {%>
+        <div class="panel panel-default">
+            <div class="panel-heading">درخواست های عضویت در دوره شما</div>
+            <div class="panel-body">
+                <% locals.ReqsToJoin.forEach(function(ReqToJoin) { %>
+                <div id="userdiv<%= ReqToJoin.UserId %>" style="margin-bottom: 45px;">
+                    <p><div class="pull-right"><%= ReqToJoin.userShow %></div>
+                        <div id="ConfUsrToJoin1"><button type="button" id="ConfUsr<%= ReqToJoin.UserId %>" onclick="confirmusertojoin(1, <%= ReqToJoin.UserId %>, <%= locals.dirId %> );" class="btn btn-success pull-left">تایید</button></div>
+                        <div id="ConfUsrToJoin0"><button type="button" id="ConfUsr<%= ReqToJoin.UserId %>" onclick="confirmusertojoin(0, <%= ReqToJoin.UserId %>, <%= locals.dirId %> );" class="btn btn-danger pull-left">لغو</button></div>
+                    </p>
+                    <p><br><%= ReqToJoin.Msg %></p>
+                    <p><div class="pull-left"><%= ReqToJoin.ReqCount %> درخواست</div><div class="pull-right"><%= ReqToJoin.Date %></div></p>
+                </div><br>
+                <% }); %>
+            </div>
+        </div>
+        <% } else {%>
+        <% } %>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">ایجاد پست جدید</div>
+            <div class="panel-body">
+                <label for="postContent">تیتر پست:</label>
+				<input type="text" class="form-control" id="postTitle"/>
+                <label for="postContent">متن پست:</label>
+				<textarea class="form-control" rows="10" id="postContent"></textarea>
+            </div>
+            <div class="panel-footer">
+                <button type="button" id="submitPostCont" onclick="newDircPost(<%= locals.dirId %>);" class="btn btn-success">ثبت</button>
+            </div>
+        </div>
+
+
+        <% include MainDiv-dir-PostNodes.ejs %>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<% } else { %>
+
+<% include MainDiv-dir-notMaster.ejs %>
+
+<% } } else { %>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading"><%= dirName %></div>
+            <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                    alt="Image">
+
+            </div>
+            <div class="panel-footer">
+                <p><span>توضیحات:</span></p><p><%= dirDesc %></p><hr>
+                <p><span>تاریخ ایجاد:</span></p><p><%= createdTime %></p><hr>
+                <p><span>توسط:</span></p><p><%= creatorUserShow %></p><hr>
+                <p><span>تعداد اعضا:</span></p><p><%= subsCount %></p><hr>
+                <p><button type="button" class="btn btn-primary">برای عضویت باید ثبت نام کنید</button></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <% if(locals.dirPrivacy==0) { %>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div style="font-size: 2vw;" class="text-center">
+                    <h1>دوره غیرفعال</h1>
+                    <p>این دوره حذف شده. برای اطلاعات بیشتر با مدرس دوره تماس بگیرید.</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p><%= CurrTime %></p>
+            </div>
+        </div>
+        <%} else if(locals.dirPrivacy==1) { %>
+
+        <% include MainDiv-dir-PostNodes.ejs %>
+
+        <% } else if(locals.dirPrivacy==2) { %>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div style="font-size: 2vw;" class="text-center">
+                    <h1>403 !!!</h1>
+                    <p>این دوره خصوصی است</p><p>برای عضویت در این دوره باید ابتدا ثبت نام و سپس درخواست عضویت تان را در همین صفحه ثبت کنید</p>
+                    <p>پس از تایید مدرس دوره میتوانید مطالب دوره را مرور کنید</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <p><%= CurrTime %></p>
+            </div>
+        </div>
+        
+        <% } %>
+    </div>
+</div>
+<% } %>
+</div>
+<br>
+
+
+<script type="text/javascript">
+    
+
+<% if(locals.loggedIn){%>
+<% if(locals.master) { %>
+<% if(locals.ReqCountsForDir != 0) {%>
+
+<% } } else { %>
+<% if(locals.RegisteredOnDir==1) { %>
+<% if(locals.submitted == 1) { %>
+    function SubmitForDir()
+    {
+        var TBt = document.getElementById("SubForDirBtn");
+        TBt.onclick="";
+        TBt.innerHTML="لطفا کمی صبر کنید...";
+        var xp = new XMLHttpRequest();
+        xp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                alert(this.responseText);
+                setTimeout(function () {
+                    window.location.replace("/?reqid=7489");
+                },750);
+            }
+        };
+        xp.open("POST", "/sendCanReq");
+        xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        var d = new Date();
+        xp.send("ReqData="+JSON.stringify({ Message: "NULL" , dirId : <%= dirId %> }));
+    }       
+<% } else { %>
+    function SubmitForDir()
+    {
+        var TBt = document.getElementById("SubForDirBtn");
+        TBt.onclick="";
+        TBt.innerHTML="لطفا کمی صبر کنید...";
+        var xp = new XMLHttpRequest();
+        xp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                alert(this.responseText);
+                setTimeout(function () {
+                    window.location.replace("/?reqid=7489");
+                },750);
+            }
+        };
+        xp.open("POST", "/sendRegReq");
+        xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        var d = new Date();
+        xp.send("ReqData="+JSON.stringify({ Message: "NULL" , dirId : <%= dirId %> }));
+    }
+<% } } else { %>
+    function SendReg()
+    {
+        var RegBTN = document.getElementById("SubmitReg"), RegLd = document.getElementById("RegLoad");
+        var TextAreaReq = document.getElementById("UserDes");
+        RegBTN.onclick = "";
+        RegLd.innerHTML = "لطفا کمی صبر کنید ...";
+        var xp = new XMLHttpRequest();
+        xp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                RegLd.innerHTML = this.responseText;
+            }
+        };
+        xp.open("POST", "/sendRegReq");
+        xp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        var d = new Date();
+        xp.send("ReqData="+JSON.stringify({ Message: TextAreaReq.value , dirId : <%= dirId %> }));
+    }
+<% } } }%>
+
+function conf()
+{
+    alert("asrxfgh");
+}
+</script>

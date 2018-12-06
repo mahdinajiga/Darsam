@@ -1,4 +1,4 @@
-<%if(locals.direcs){ if(locals.loggedIn){ if(locals.userType == 1) { %>
+<%if(locals.loggedIn){ if(locals.userType == 1) { %>
 <div class="container">
     <div class="row">
         <div class="panel panel-primary">
@@ -10,7 +10,7 @@
                 <% } else { %>
                 <% locals.SetdirNodes.forEach(function(Node) { %>
                 <div class="col-sm-4">
-                    <div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="onl();">
+                    <div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="LdDir(<%= Node.dirId %>);">
                         <div class="panel-heading"><%= Node.dirName %></div>
                         <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
                                 alt="Image">
@@ -22,8 +22,7 @@
                         </div>
                     </div>
                 </div>
-                <% }); %>
-                <% } %>
+                <% }); }%>
 
             </div>
         </div>
@@ -35,8 +34,25 @@
             <div class="panel-heading">دوره هایی که شما در آنها عضوید</div>
             <div class="panel-body">
             
-                
+                <% if(locals.DirCount == 0) { %>
+                <p>شما در هیچ دوره ای عضو نیستید</p>
 
+                <% } else { %>
+                <% locals.DirNodes.forEach(function(Node) { %>
+                <div class="col-sm-4">
+                    <div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="LdDir(<%= Node.dirId %>);">
+                        <div class="panel-heading"><%= Node.dirName %></div>
+                        <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                                alt="Image">
+
+                        </div>
+                        <div class="panel-footer">
+                            <p><span>توضیحات:</span></p><p><%= Node.dirDesc %></p>
+                            <p><span><% if(Node.dirPrivacy==0) { %>دوره غیر فعال است<% }else if(Node.dirPrivacy==1) { %>این دوره عمومی است<% } else if(Node.dirPrivacy==2) {%>این دوره خصوصی است<%}%></span></p>
+                        </div>
+                    </div>
+                </div>
+                <% }); }%>
             </div>
         </div>
     </div>
@@ -49,13 +65,31 @@
             <div class="panel-heading">دوره های من</div>
             <div class="panel-body">
             
-                
+                <% if(locals.DirCount == 0) { %>
+                <p>شما در هیچ دوره ای عضو نیستید</p>
+
+                <% } else { %>
+                <% locals.DirNodes.forEach(function(Node) { %>
+                <div class="col-sm-4">
+                    <div class="panel panel-default HoverPanel" style="cursor: pointer;" onclick="LdDir(<%= Node.dirId %>);">
+                        <div class="panel-heading"><%= Node.dirName %></div>
+                        <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
+                                alt="Image">
+
+                        </div>
+                        <div class="panel-footer">
+                            <p><span>توضیحات:</span></p><p><%= Node.dirDesc %></p>
+                            <p><span><% if(Node.dirPrivacy==0) { %>دوره غیر فعال است<% }else if(Node.dirPrivacy==1) { %>این دوره عمومی است<% } else if(Node.dirPrivacy==2) {%>این دوره خصوصی است<%}%></span></p>
+                        </div>
+                    </div>
+                </div>
+                <% }); }%>
 
             </div>
         </div>
     </div>
 </div>
-<%}%>
+<% } %>
 <hr><hr>
 <div class="container">
     <div class="row">
@@ -67,7 +101,7 @@
                 <% } else { %>
                 <% locals.Found.forEach(function(Node) { %>
                 <div class="col-sm-4">
-                    <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl(<%= Node.dirId %>);">
+                    <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="LdDir(<%= Node.dirId %>);">
                         <div class="panel-heading"><%= Node.dirName %></div>
                         <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
                                 alt="Image">
@@ -90,7 +124,7 @@
     </div>
 </div>
 
-<%}else{%>
+<% } else {%>
 <div class="container">
     <div class="row">
         <% if(locals.countFound == 0) { %>
@@ -99,7 +133,7 @@
         <% } else { %>
         <% locals.Found.forEach(function(Node) { %>
         <div class="col-sm-4">
-            <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="onl(<%= Node.dirId %>);">
+            <div class="panel panel-primary HoverPanel" style="cursor: pointer;" onclick="LdDir(<%= Node.dirId %>);">
                 <div class="panel-heading"><%= Node.dirName %></div>
                 <div class="panel-body"><img src="https://placehold.it/150x80?text=NO IMAGE" class="img-responsive" style="width:100%"
                         alt="Image">
@@ -118,10 +152,4 @@
         <% } %>
     </div>
 </div>
-<% } } else if(locals.dir){%>
-
-
-
-
 <% } %>
-<br>
